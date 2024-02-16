@@ -11,15 +11,15 @@ deleteButton.addEventListener('click', deleteCard);
 cardPlaces.append(cloneCard);
 }
 
-const objectKey = initialCards
+function deleteCard(close) {
+    const cardToRemove = close.target.closest('.places__item');
+    cardToRemove.remove();
+}
+
+const objectKey = initialCards;
 
 function add() {
     objectKey.forEach(addCard);
-}
-
-function deleteCard(event) {
-    const cardToRemove = event.target.closest('.places__item');
-    cardToRemove.remove();
 }
 
 add()

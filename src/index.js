@@ -31,6 +31,8 @@ const imagesFonts = [
   { name: 'regular', link: regular },
 ];
 
+// все карточки с 5 работы (card.js)
+
 const initialCards = [
   {
     name: "Архыз",
@@ -57,6 +59,8 @@ const initialCards = [
     link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
   }
 ];
+
+// Код с 5 ПР
 
 const cardTemplate = document.querySelector("#card-template").content;
 const cardPlaces = document.querySelector(".places__list");
@@ -87,3 +91,55 @@ function renderInitialCards() {
 }
 
 renderInitialCards();
+
+// КОД 6 ПР
+// добавили в DOM нужные элементы popups: кнопку открытия, закрытия и само окно
+const editProfile = document.querySelector(".popup_type_edit");
+const popupCloseEditProfile = editProfile.querySelector(".popup__close");
+const buttonEditProfile = document.querySelector(".profile__edit-button");
+
+const editCard = document.querySelector(".popup_type_new-card");
+const buttonEditCard = document.querySelector(".profile__add-button");
+const popupCloseEditCard = editCard.querySelector(".popup__close");
+
+const openImage = document.querySelector(".popup_type_image");
+const popupCloseOpenImage = openImage.querySelector(".popup__close");
+const buttonOpenImage = document.querySelector(".card__image");
+
+
+function openPopup(Popup) {
+  Popup.classList.add("popup_is-opened");
+}
+
+function closePopup(Popup) {
+  Popup.classList.remove("popup_is-opened");
+}
+
+buttonEditProfile.addEventListener("click", function() {
+  openPopup(editProfile);
+});
+
+popupCloseEditProfile.addEventListener("click", function(){
+  closePopup(editProfile);
+})
+
+buttonEditCard.addEventListener("click", function() {
+  openPopup(editCard);
+});
+
+popupCloseEditCard.addEventListener("click", function(){ 
+  closePopup(editCard);
+})
+
+buttonOpenImage.addEventListener("click", function() {
+  openPopup(openImage);
+});
+
+popupCloseOpenImage.addEventListener("click", function(){ 
+  closePopup(openImage);
+})
+
+
+
+
+

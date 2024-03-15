@@ -73,6 +73,29 @@ function createCard(link, name, deleteHandler) {
   imageCard.alt = name;
   cloneCard.querySelector(".card__title").textContent = name;
   deleteButton.addEventListener("click", deleteHandler);
+
+  //открытие картинок попапом добавление в DOM
+  const openImage = document.querySelector(".popup_type_image");
+  const buttonOpenImage = document.querySelector(".popup__image");
+  const popupCaption = document.querySelector(".popup__caption");
+  const popupCloseOpenImage = openImage.querySelector(".popup__close");
+
+  // поисковик клика и открытие
+
+  imageCard.addEventListener("click", function() {
+    buttonOpenImage.src = link;
+    popupCaption.textContent = name;
+    openPopup(openImage);
+  }) 
+
+  // закрытие 
+
+  popupCloseOpenImage.addEventListener("click", function(){ 
+    closePopup(openImage);
+  })
+
+  // до сюда
+
   return cloneCard;
 }
 
@@ -102,18 +125,34 @@ const editCard = document.querySelector(".popup_type_new-card");
 const buttonEditCard = document.querySelector(".profile__add-button");
 const popupCloseEditCard = editCard.querySelector(".popup__close");
 
-const openImage = document.querySelector(".popup_type_image");
-const popupCloseOpenImage = openImage.querySelector(".popup__close");
-const buttonOpenImage = document.querySelector(".card__image");
-
-
 function openPopup(Popup) {
   Popup.classList.add("popup_is-opened");
+  saveInfoProfile()
 }
 
 function closePopup(Popup) {
   Popup.classList.remove("popup_is-opened");
 }
+
+// закрытие попапов при нажатии Esc
+
+window.addEventListener("keydown", function(event) {
+  const openWindow = document.querySelector(".popup_is-opened");
+  if (event.key === "Escape") {
+    closePopup(openWindow);
+  }
+})
+
+// закрытие попапов при клике на оверлей
+
+document.addEventListener("click", function(event) {
+  const openedPopup = document.querySelector(".popup_is-opened");
+  if (event.target === openedPopup) {
+    closePopup(openedPopup);
+  }
+})
+
+// открытие и закрытие попапов редактирования профиля и добавления карточек
 
 buttonEditProfile.addEventListener("click", function() {
   openPopup(editProfile);
@@ -131,14 +170,35 @@ popupCloseEditCard.addEventListener("click", function(){
   closePopup(editCard);
 })
 
-buttonOpenImage.addEventListener("click", function() {
-  openPopup(openImage);
-});
+// редактирование информации профиля
 
-popupCloseOpenImage.addEventListener("click", function(){ 
-  closePopup(openImage);
-})
+const formElement = document.querySelector(".popup__form");
+const nameInput = document.querySelector(".popup__input_type_name");
+const jobInput = document.querySelector(".popup__input_type_description");
+const nameProfile = document.querySelector(".profile__title");
+const jobProfile = document.querySelector(".profile__description");
 
+// функция сохранения информацци, которая уже имеется в разметке
+
+function saveInfoProfile() {
+  const initialName = nameProfile.textContent;
+  const initialJob = jobProfile.textContent;
+  nameInput.value = initialName;
+  jobInput.value = initialJob;
+}
+
+// функция добавления новых записей
+
+function handleFormSubmit(evt) {
+  evt.preventDefault();
+  nameProfile.textContent = nameInput.value;
+  jobProfile.textContent = jobInput.value;
+  closePopup(editProfile);
+}
+
+formElement.addEventListener('submit', handleFormSubmit); 
+
+//
 
 
 

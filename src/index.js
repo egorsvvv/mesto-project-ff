@@ -1,63 +1,35 @@
-import avatar from './images/avatar.jpg';
-import addIcon from './images/add-icon.svg';
-import card1 from './images/card_1.jpg';
-import card2 from './images/card_2.jpg';
-import card3 from './images/card_3.jpg';
-import close from './images/close.svg';
-import deleteIcon from './images/delete-icon.svg';
-import editIcon from './images/edit-icon.svg';
-import likeActive from './images/like-active.svg';
-import likeInactive from './images/like-inactive.svg';
-import logo from './images/logo.svg';
-import black from './vendor/fonts/inter-Black.woff2';
-import medium from './vendor/fonts/inter-Medium.woff2';
-import regular from './vendor/fonts/inter-Regular.woff2';
-import './pages/index.css';
+import avatar from "./images/avatar.jpg";
+import addIcon from "./images/add-icon.svg";
+import card1 from "./images/card_1.jpg";
+import card2 from "./images/card_2.jpg";
+import card3 from "./images/card_3.jpg";
+import close from "./images/close.svg";
+import deleteIcon from "./images/delete-icon.svg";
+import editIcon from "./images/edit-icon.svg";
+import likeActive from "./images/like-active.svg";
+import likeInactive from "./images/like-inactive.svg";
+import logo from "./images/logo.svg";
+import black from "./vendor/fonts/inter-Black.woff2";
+import medium from "./vendor/fonts/inter-Medium.woff2";
+import regular from "./vendor/fonts/inter-Regular.woff2";
+import "./pages/index.css";
+import { initialCards, } from "./components/card";
 
 const imagesFonts = [
-  { name: 'avatar', link: avatar },
-  { name: 'addIcon', link: addIcon },
-  { name: 'card1', link: card1 },
-  { name: 'card2', link: card2 },
-  { name: 'card3', link: card3 },
-  { name: 'close', link: close },
-  { name: 'deleteIcon', link: deleteIcon },
-  { name: 'editIcon', link: editIcon },
-  { name: 'likeActive', link: likeActive },
-  { name: 'likeInactive', link: likeInactive },
-  { name: 'logo', link: logo },
-  { name: 'black', link: black },
-  { name: 'medium', link: medium },
-  { name: 'regular', link: regular },
-];
-
-// все карточки с 5 работы (card.js)
-
-const initialCards = [
-  {
-    name: "Архыз",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    name: "Челябинская область",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
-  },
-  {
-    name: "Иваново",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
-  },
-  {
-    name: "Камчатка",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg",
-  },
-  {
-    name: "Холмогорский район",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg",
-  },
-  {
-    name: "Байкал",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
-  }
+  { name: "avatar", link: avatar },
+  { name: "addIcon", link: addIcon },
+  { name: "card1", link: card1 },
+  { name: "card2", link: card2 },
+  { name: "card3", link: card3 },
+  { name: "close", link: close },
+  { name: "deleteIcon", link: deleteIcon },
+  { name: "editIcon", link: editIcon },
+  { name: "likeActive", link: likeActive },
+  { name: "likeInactive", link: likeInactive },
+  { name: "logo", link: logo },
+  { name: "black", link: black },
+  { name: "medium", link: medium },
+  { name: "regular", link: regular },
 ];
 
 // Код с 5 ПР
@@ -65,14 +37,17 @@ const initialCards = [
 const cardTemplate = document.querySelector("#card-template").content;
 const cardPlaces = document.querySelector(".places__list");
 
-function createCard(link, name, deleteHandler) {
+function createCard(link, name, deleteHandler, likeHandler) {
   const cloneCard = cardTemplate.querySelector(".places__item").cloneNode(true);
   const deleteButton = cloneCard.querySelector(".card__delete-button");
   const imageCard = cloneCard.querySelector(".card__image");
+  const likeButton = cloneCard.querySelector(".card__like-button");
   imageCard.src = link;
   imageCard.alt = name;
   cloneCard.querySelector(".card__title").textContent = name;
   deleteButton.addEventListener("click", deleteHandler);
+
+  likeButton.addEventListener("click", likeHandler);
 
   //открытие картинок попапом добавление в DOM
   const openImage = document.querySelector(".popup_type_image");
@@ -82,17 +57,17 @@ function createCard(link, name, deleteHandler) {
 
   // поисковик клика и открытие
 
-  imageCard.addEventListener("click", function() {
+  imageCard.addEventListener("click", function () {
     buttonOpenImage.src = link;
     popupCaption.textContent = name;
     openPopup(openImage);
-  }) 
+  });
 
-  // закрытие 
+  // закрытие
 
-  popupCloseOpenImage.addEventListener("click", function(){ 
+  popupCloseOpenImage.addEventListener("click", function () {
     closePopup(openImage);
-  })
+  });
 
   // до сюда
 
@@ -100,7 +75,7 @@ function createCard(link, name, deleteHandler) {
 }
 
 function addCard(link, name) {
-  const newCard = createCard(link, name, deleteHandler);
+  const newCard = createCard(link, name, deleteHandler, likeCard);
   cardPlaces.append(newCard);
 }
 
@@ -127,7 +102,7 @@ const popupCloseEditCard = editCard.querySelector(".popup__close");
 
 function openPopup(Popup) {
   Popup.classList.add("popup_is-opened");
-  saveInfoProfile()
+  saveInfoProfile();
 }
 
 function closePopup(Popup) {
@@ -136,43 +111,43 @@ function closePopup(Popup) {
 
 // закрытие попапов при нажатии Esc
 
-window.addEventListener("keydown", function(event) {
+window.addEventListener("keydown", function (event) {
   const openWindow = document.querySelector(".popup_is-opened");
   if (event.key === "Escape") {
     closePopup(openWindow);
   }
-})
+});
 
 // закрытие попапов при клике на оверлей
 
-document.addEventListener("click", function(event) {
+document.addEventListener("click", function (event) {
   const openedPopup = document.querySelector(".popup_is-opened");
   if (event.target === openedPopup) {
     closePopup(openedPopup);
   }
-})
+});
 
 // открытие и закрытие попапов редактирования профиля и добавления карточек
 
-buttonEditProfile.addEventListener("click", function() {
+buttonEditProfile.addEventListener("click", function () {
   openPopup(editProfile);
 });
 
-popupCloseEditProfile.addEventListener("click", function(){
+popupCloseEditProfile.addEventListener("click", function () {
   closePopup(editProfile);
-})
+});
 
-buttonEditCard.addEventListener("click", function() {
+buttonEditCard.addEventListener("click", function () {
   openPopup(editCard);
 });
 
-popupCloseEditCard.addEventListener("click", function(){ 
+popupCloseEditCard.addEventListener("click", function () {
   closePopup(editCard);
-})
+});
 
 // редактирование информации профиля
 
-const formElement = document.querySelector(".popup__form");
+const formElementProfile = editProfile.querySelector(".popup__form");
 const nameInput = document.querySelector(".popup__input_type_name");
 const jobInput = document.querySelector(".popup__input_type_description");
 const nameProfile = document.querySelector(".profile__title");
@@ -196,10 +171,32 @@ function handleFormSubmit(evt) {
   closePopup(editProfile);
 }
 
-formElement.addEventListener('submit', handleFormSubmit); 
+formElementProfile.addEventListener("submit", handleFormSubmit);
 
-//
+// функция добавления новой карточки
 
+function addPersonalCard(evt) {
+  evt.preventDefault();
+  const cardNameInput = document.querySelector(".popup__input_type_card-name");
+  const cardLinkInput = document.querySelector(".popup__input_type_url");
+  const cardName = cardNameInput.value;
+  const cardLink = cardLinkInput.value;
+  const newCard = createCard(cardLink, cardName, deleteHandler, likeCard);
+  cardPlaces.prepend(newCard);
+  closePopup(editCard);
+  cardNameInput.value = "";
+  cardLinkInput.value = "";
+}
 
+const popUpSaveButton = editCard.querySelector(".popup__button");
+popUpSaveButton.addEventListener("click", addPersonalCard);
 
+const FormElementCard = editCard.querySelector(".popup__form");
+FormElementCard.addEventListener("submit", handleFormSubmit);
 
+// функция лайка карточки
+
+function likeCard(event) {
+  const like = event.target.closest(".card__like-button");
+  like.classList.toggle("card__like-button_is-active");
+}

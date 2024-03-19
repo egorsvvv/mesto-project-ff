@@ -1,48 +1,22 @@
-import avatar from "./images/avatar.jpg";
-import addIcon from "./images/add-icon.svg";
-import card1 from "./images/card_1.jpg";
-import card2 from "./images/card_2.jpg";
-import card3 from "./images/card_3.jpg";
-import close from "./images/close.svg";
-import deleteIcon from "./images/delete-icon.svg";
-import editIcon from "./images/edit-icon.svg";
-import likeActive from "./images/like-active.svg";
-import likeInactive from "./images/like-inactive.svg";
 import logo from "./images/logo.svg";
 import black from "./vendor/fonts/inter-Black.woff2";
 import medium from "./vendor/fonts/inter-Medium.woff2";
 import regular from "./vendor/fonts/inter-Regular.woff2";
 import "./pages/index.css";
 import {
-  initialCards,
   createCard,
   deleteHandler,
   likeCard,
+  openImageCard,
 } from "./components/card";
-import { closePopup, openPopup } from "./components/modal";
-
-const imagesFonts = [
-  { name: "avatar", link: avatar },
-  { name: "addIcon", link: addIcon },
-  { name: "card1", link: card1 },
-  { name: "card2", link: card2 },
-  { name: "card3", link: card3 },
-  { name: "close", link: close },
-  { name: "deleteIcon", link: deleteIcon },
-  { name: "editIcon", link: editIcon },
-  { name: "likeActive", link: likeActive },
-  { name: "likeInactive", link: likeInactive },
-  { name: "logo", link: logo },
-  { name: "black", link: black },
-  { name: "medium", link: medium },
-  { name: "regular", link: regular },
-];
+import { closePopup, openPopup, closeOverlay } from "./components/modal";
+import { initialCards } from "./components/cards";
 
 // Код с 5 ПР
 const cardPlaces = document.querySelector(".places__list");
 
 function addCard(link, name) {
-  const newCard = createCard(link, name, deleteHandler, likeCard);
+  const newCard = createCard(link, name, deleteHandler, likeCard, openImageCard);
   cardPlaces.append(newCard);
 }
 
@@ -62,28 +36,22 @@ const editCard = document.querySelector(".popup_type_new-card");
 const buttonEditCard = document.querySelector(".profile__add-button");
 const popupCloseEditCard = editCard.querySelector(".popup__close");
 
-// закрытие попапов при нажатии Esc
-
-window.addEventListener("keydown", function (event) {
-  const openWindow = document.querySelector(".popup_is-opened");
-  if (event.key === "Escape") {
-    closePopup(openWindow);
-  }
-});
+const openImage = document.querySelector(".popup_type_image");
+const popupCloseOpenImage = openImage.querySelector(".popup__close");
 
 // закрытие попапов при клике на оверлей
 
-document.addEventListener("click", function (event) {
-  const openedPopup = document.querySelector(".popup_is-opened");
-  if (event.target === openedPopup) {
-    closePopup(openedPopup);
-  }
-});
+document.addEventListener("click", closeOverlay);
 
 // открытие и закрытие попапов редактирования профиля и добавления карточек
 
+popupCloseOpenImage.addEventListener("click", function () {
+  closePopup(openImage);
+});
+
 buttonEditProfile.addEventListener("click", function () {
   openPopup(editProfile);
+  saveInfoProfile();
 });
 
 popupCloseEditProfile.addEventListener("click", function () {
@@ -117,14 +85,14 @@ export function saveInfoProfile() {
 
 // функция добавления новых записей
 
-function handleFormSubmit(evt) {
+function handleFormSubmitProfile(evt) {
   evt.preventDefault();
   nameProfile.textContent = nameInput.value;
   jobProfile.textContent = jobInput.value;
   closePopup(editProfile);
 }
 
-formElementProfile.addEventListener("submit", handleFormSubmit);
+formElementProfile.addEventListener("submit", handleFormSubmitProfile);
 
 // функция добавления новой карточки
 
@@ -141,8 +109,6 @@ function addPersonalCard(evt) {
   cardLinkInput.value = "";
 }
 
-const popUpSaveButton = editCard.querySelector(".popup__button");
-popUpSaveButton.addEventListener("click", addPersonalCard);
+const popUpSaveButton = document.querySelector('form[name="new-place"]');
+popUpSaveButton.addEventListener("submit", addPersonalCard);
 
-const FormElementCard = editCard.querySelector(".popup__form");
-FormElementCard.addEventListener("submit", handleFormSubmit);

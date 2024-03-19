@@ -1,31 +1,4 @@
-import { closePopup, openPopup } from "./modal";
-// все карточки с 5 работы (card.js)
-export const initialCards = [
-  {
-    name: "Архыз",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/arkhyz.jpg",
-  },
-  {
-    name: "Челябинская область",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/chelyabinsk-oblast.jpg",
-  },
-  {
-    name: "Иваново",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/ivanovo.jpg",
-  },
-  {
-    name: "Камчатка",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kamchatka.jpg",
-  },
-  {
-    name: "Холмогорский район",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/kholmogorsky-rayon.jpg",
-  },
-  {
-    name: "Байкал",
-    link: "https://pictures.s3.yandex.net/frontend-developer/cards-compressed/baikal.jpg",
-  },
-];
+import { openPopup } from "./modal";
 
 export function createCard(link, name, deleteHandler, likeHandler) {
   const cardTemplate = document.querySelector("#card-template").content;
@@ -40,24 +13,10 @@ export function createCard(link, name, deleteHandler, likeHandler) {
 
   likeButton.addEventListener("click", likeHandler);
 
-  //открытие картинок попапом добавление в DOM
-  const openImage = document.querySelector(".popup_type_image");
-  const buttonOpenImage = document.querySelector(".popup__image");
-  const popupCaption = document.querySelector(".popup__caption");
-  const popupCloseOpenImage = openImage.querySelector(".popup__close");
-
   // поисковик клика и открытие
 
-  imageCard.addEventListener("click", function () {
-    buttonOpenImage.src = link;
-    popupCaption.textContent = name;
-    openPopup(openImage);
-  });
-
-  // закрытие
-
-  popupCloseOpenImage.addEventListener("click", function () {
-    closePopup(openImage);
+  imageCard.addEventListener("click", function(){
+    openImageCard(link, name)
   });
 
   // до сюда
@@ -75,3 +34,15 @@ export function likeCard(event) {
   const like = event.target.closest(".card__like-button");
   like.classList.toggle("card__like-button_is-active");
 }
+
+// функция открытия попапа карточки
+export function openImageCard(reference, description) {
+   //открытие картинок попапом добавление в DOM
+   const openImage = document.querySelector(".popup_type_image");
+   const buttonOpenImage = document.querySelector(".popup__image");
+   const popupCaption = document.querySelector(".popup__caption");
+   buttonOpenImage.src = reference;
+   popupCaption.textContent = description;
+   openPopup(openImage);
+}
+

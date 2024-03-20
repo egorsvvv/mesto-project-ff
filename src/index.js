@@ -7,7 +7,6 @@ import {
   createCard,
   deleteHandler,
   likeCard,
-  openImageCard,
 } from "./components/card";
 import { closePopup, openPopup, closeOverlay } from "./components/modal";
 import { initialCards } from "./components/cards";
@@ -28,6 +27,18 @@ renderInitialCards();
 
 // КОД 6 ПР
 // добавили в DOM нужные элементы popups: кнопку открытия, закрытия и само окно
+
+// функция открытия попапа карточки
+function openImageCard(reference, description) {
+  //открытие картинок попапом добавление в DOM
+  const openImage = document.querySelector(".popup_type_image");
+  const buttonOpenImage = document.querySelector(".popup__image");
+  const popupCaption = document.querySelector(".popup__caption");
+  buttonOpenImage.src = reference;
+  popupCaption.textContent = description;
+  openPopup(openImage);
+}
+
 const editProfile = document.querySelector(".popup_type_edit");
 const popupCloseEditProfile = editProfile.querySelector(".popup__close");
 const buttonEditProfile = document.querySelector(".profile__edit-button");
@@ -102,7 +113,7 @@ function addPersonalCard(evt) {
   const cardLinkInput = document.querySelector(".popup__input_type_url");
   const cardName = cardNameInput.value;
   const cardLink = cardLinkInput.value;
-  const newCard = createCard(cardLink, cardName, deleteHandler, likeCard);
+  const newCard = createCard(cardLink, cardName, deleteHandler, likeCard, openImageCard);
   cardPlaces.prepend(newCard);
   closePopup(editCard);
   cardNameInput.value = "";

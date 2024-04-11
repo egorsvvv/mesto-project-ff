@@ -36,9 +36,15 @@
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Редактировать профиль</h3>
-      <form class="popup__form" name="edit-profile">
-        <input type="text" name="name" class="popup__input popup__input_type_name" placeholder="Имя" required>
-        <input type="text" name="description" class="popup__input popup__input_type_description" placeholder="Занятие" required>
+      <form class="popup__form" name="edit-profile" novalidate>
+        <input id="text-input-name" type="text" name="name" class="popup__input popup__input_type_name" placeholder="Имя" minlength="2" maxlength="40" required data-error-value-missing="Вы пропустили это поле" 
+        data-error-pattern-mismatch="Введите текст на кириллице или латинице, дефис или пробел"
+        data-error-too-short="Минимальное количество символов: 2. Длина текста сейчас: 1 символ." pattern="^[a-zA-Zа-яА-ЯёЁ\s\-]+$">
+        <span class="form__input-error text-input-name-error"></span>
+        <input id="text-input-about-me" type="text" name="description" class="popup__input popup__input_type_description" placeholder="О себе" required minlength="2" maxlength="200" data-error-value-missing="Вы пропустили это поле" 
+        data-error-pattern-mismatch="Введите текст на кириллице или латинице, дефис или пробел"
+        data-error-too-short="Минимальное количество символов: 2. Длина текста сейчас: 1 символ." pattern="^[a-zA-Zа-яА-ЯёЁ\s\-]+$">
+        <span class="form__input-error text-input-about-me-error"></span>
         <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>
@@ -47,9 +53,11 @@
     <div class="popup__content">
       <button type="button" class="popup__close"></button>
       <h3 class="popup__title">Новое место</h3>
-      <form class="popup__form" name="new-place">
-        <input type="text" name="place-name" class="popup__input popup__input_type_card-name" placeholder="Название" required>
-        <input type="url" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на картинку" required>
+      <form class="popup__form" name="new-place" novalidate>
+        <input id="text-input-place-name" type="text" name="place-name" class="popup__input popup__input_type_card-name" placeholder="Название" required minlength="2" maxlength="30" pattern="^[a-zA-Zа-яА-ЯёЁ\s\-]+$" data-error-value-missing="Вы пропустили это поле" data-error-pattern-mismatch="Введите текст на кириллице или латинице, дефис или пробел" data-error-too-short="Минимальное количество символов: 2. Длина текста сейчас: 1 символ.">
+        <span class="form__input-error text-input-place-name-error"></span>
+        <input id="url-input" type="url" name="link" class="popup__input popup__input_type_url" placeholder="Ссылка на картинку" required data-error-value-missing="Вы пропустили это поле" data-error-type-mismatch="Введите адрес сайта">
+        <span class="form__input-error url-input-error"></span>
         <button type="submit" class="button popup__button">Сохранить</button>
       </form>
     </div>
@@ -62,6 +70,17 @@
     </div>
   </div>
 </div>
+<div class="popup popup__type-avatar">
+  <div class="popup__content-avatar">
+      <button type="button" class="popup__close"></button>
+      <h3 class="popup__title">Обновить аватар</h3>
+        <form class="popup__form" novalidate name="new-avatar">
+          <input type="url" id="url-input" name="link" class="popup__input popup__input_type_url" required data-error-value-missing="Вы пропустили это поле" data-error-type-mismatch="Введите адрес фотографии">
+          <span class="form__input-error url-input-error"></span>
+          <button type="submit" class="button popup__button">Сохранить</button>
+        </form>
+  </div>
+</div>
 
 
 <template id="card-template">
@@ -71,7 +90,10 @@
     <div class="card__description">
       <h2 class="card__title">
       </h2>
+      <div class="container__like">
       <button type="button" class="card__like-button"></button>
+      <span class="quantity__likes"></span>
+      </div>
     </div>
   </li>
 </template>

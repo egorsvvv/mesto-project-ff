@@ -10,6 +10,7 @@ import {
   saveButton,
   disabledButtonNewPlaces,
   setEventListeners,
+  clearValidation
 } from "./components/validation";
 import { createCard, deleteHandler, likeCard } from "./components/card";
 import { closePopup, openPopup, closeOverlay } from "./components/modal";
@@ -19,7 +20,7 @@ import { config, userData, cards, addNewCard, newProfileInfo, updateAvatar} from
 // Код с 5 ПР
 const cardPlaces = document.querySelector(".places__list");
 
-function addCard(link, name, likesCount, cardsData, userDataId, cardId) {
+function addCard(link, name, likesCount, cardsData, userDataId, cardId, isLiked) {
   const newCard = createCard(
     link,
     name,
@@ -29,7 +30,8 @@ function addCard(link, name, likesCount, cardsData, userDataId, cardId) {
     likesCount,
     cardsData, 
     userDataId,
-    cardId
+    cardId,
+    isLiked
   );
   
   cardPlaces.append(newCard);
@@ -45,13 +47,14 @@ function addCard(link, name, likesCount, cardsData, userDataId, cardId) {
 // добавили в DOM нужные элементы popups: кнопку открытия, закрытия и само окно
 
 // функция открытия попапа карточки
-function openImageCard(reference, description) {
+const openImage = document.querySelector(".popup_type_image");
+const buttonOpenImage = document.querySelector(".popup__image");
+const popupCaption = document.querySelector(".popup__caption");
+function openImageCard(reference, description, overview) {
   //открытие картинок попапом добавление в DOM
-  const openImage = document.querySelector(".popup_type_image");
-  const buttonOpenImage = document.querySelector(".popup__image");
-  const popupCaption = document.querySelector(".popup__caption");
   buttonOpenImage.src = reference;
   popupCaption.textContent = description;
+  buttonOpenImage.alt = overview;
   openPopup(openImage);
 }
 
@@ -63,7 +66,6 @@ const editCard = document.querySelector(".popup_type_new-card");
 const buttonEditCard = document.querySelector(".profile__add-button");
 const popupCloseEditCard = editCard.querySelector(".popup__close");
 
-const openImage = document.querySelector(".popup_type_image");
 const popupCloseOpenImage = openImage.querySelector(".popup__close");
 
 // закрытие попапов при клике на оверлей
@@ -138,12 +140,11 @@ function handleFormSubmitProfile(evt) {
 formElementProfile.addEventListener("submit", handleFormSubmitProfile);
 
 // функция добавления новой карточки (подключили к API)
-
+const cardNameInput = document.querySelector(".popup__input_type_card-name");
+const cardLinkInput = document.querySelector(".popup__input_type_url");
  function addPersonalCard(evt) {
   evt.preventDefault();
   disabledButton.textContent = 'Сохранение...';
-  const cardNameInput = document.querySelector(".popup__input_type_card-name");
-  const cardLinkInput = document.querySelector(".popup__input_type_url");
   const cardName = cardNameInput.value;
   const cardLink = cardLinkInput.value;
 
@@ -179,15 +180,6 @@ const disabledButton = editCard.querySelector(".popup__button");
 
 //Оформление ошибок валидации
 
-const clearValidation = (form, validationConfig) => {
-  const inputList = Array.from(
-    form.querySelectorAll(validationConfig.inputSelector)
-  );
-  inputList.forEach((inputElement) => {
-    hideInputError(inputElement);
-  });
-};
-
 const enableValidation = (validationConfig) => {
   const formList = Array.from(
     document.querySelectorAll(validationConfig.formSelector)
@@ -212,7 +204,8 @@ Promise.all([cards(), userData()]).then(([cardsData, userDataId]) => {
   console.log(cardsData, userDataId);
   cards().then((cardsData) => {
     cardsData.forEach((card) => {
-      addCard(card.link, card.name, card.likes.length, card.owner._id, userDataId._id, card._id);
+      const isLiked = card.likes.some((like) => like._id === userDataId._id);
+      addCard(card.link, card.name, card.likes.length, card.owner._id, userDataId._id, card._id, isLiked);
     });
   });
   userData().then((userDataId) => {
@@ -225,6 +218,9 @@ Promise.all([cards(), userData()]).then(([cardsData, userDataId]) => {
     aboutProfile.textContent = userDataId.about;
     avatarProfile.style.backgroundImage = `url(\\${userData.avatar})`;
   });
+})
+.catch((error) => {
+  console.error('Ошибка при выполнении запросов:', error);
 });
 
   const profileImage = document.querySelector(".profile__image");

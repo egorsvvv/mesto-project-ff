@@ -1,6 +1,6 @@
 import { deleteCardApi, setLike, deleteLike } from "./api";
 
-export function createCard(link, name, deleteHandler, likeHandler, openCardHandler, likesCount, ownerId, userId, cardId) {
+export function createCard(link, name, deleteHandler, likeHandler, openCardHandler, likesCount, ownerId, userId, cardId, isLiked) {
   const cardTemplate = document.querySelector("#card-template").content;
   const cloneCard = cardTemplate.querySelector(".places__item").cloneNode(true);
   const deleteButton = cloneCard.querySelector(".card__delete-button");
@@ -22,6 +22,9 @@ export function createCard(link, name, deleteHandler, likeHandler, openCardHandl
 
   likeButton.addEventListener("click", (evt) => likeHandler(evt, cardId));
 
+  if (isLiked) {
+    likeButton.classList.add("card__like-button_is-active");
+  }
   // поисковик клика и открытие
 
   imageCard.addEventListener("click", function(){

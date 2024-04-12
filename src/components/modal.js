@@ -11,8 +11,8 @@ export function closePopup(popup) {
 // закрытие попапов при нажатии Esc
 
 function closeEscape(event) {
-  const openWindow = document.querySelector(".popup_is-opened");
   if (event.key === "Escape") {
+    const openWindow = document.querySelector(".popup_is-opened");
     closePopup(openWindow);
   }
 }

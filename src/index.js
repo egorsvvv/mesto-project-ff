@@ -4,13 +4,14 @@ import medium from "./vendor/fonts/inter-Medium.woff2";
 import regular from "./vendor/fonts/inter-Regular.woff2";
 import "./pages/index.css";
 import {
-  validationConfig,
   hideInputError,
   saveButtonProfile,
   saveButton,
   disabledButtonNewPlaces,
   setEventListeners,
-  clearValidation
+  clearValidation,
+  turnValidation,
+  enableValidation
 } from "./components/validation";
 import { createCard, deleteHandler, likeCard } from "./components/card";
 import { closePopup, openPopup, closeOverlay } from "./components/modal";
@@ -81,8 +82,8 @@ popupCloseOpenImage.addEventListener("click", function () {
 buttonEditProfile.addEventListener("click", function () {
   openPopup(editProfile);
   saveInfoProfile();
-  clearValidation(editProfile, validationConfig);
-  saveButtonProfile(saveButton);
+  clearValidation(editProfile, enableValidation);
+  saveButtonProfile(saveButton, enableValidation);
 });
 
 popupCloseEditProfile.addEventListener("click", function () {
@@ -91,7 +92,7 @@ popupCloseEditProfile.addEventListener("click", function () {
 
 buttonEditCard.addEventListener("click", function () {
   openPopup(editCard);
-  clearValidation(editCard, validationConfig);
+  clearValidation(editCard, enableValidation);
 });
 
 popupCloseEditCard.addEventListener("click", function () {
@@ -150,18 +151,15 @@ const cardLinkInput = document.querySelector(".popup__input_type_url");
 
   addNewCard(cardName, cardLink)
   .then(() => {
-     const newCard = createCard(
-        cardLink,
-        cardName,
-        deleteHandler,
-        likeCard,
-        openImageCard,
-     );
-     cardPlaces.prepend(newCard);
+    return Promise.all([cards(), userData()]); // Получаем обновленные данные с сервера
+  })
+  .then(([cardsData, userDataId]) => {
+    // Обновляем интерфейс с полученными данными
+    updateUI(cardsData, userDataId);
      closePopup(editCard);
      cardNameInput.value = "";
      cardLinkInput.value = "";
-     disabledButtonNewPlaces(disabledButton);
+     disabledButtonNewPlaces(disabledButton, enableValidation);
   })
     .catch((error) => {
       console.error('Ошибка при добавлении новой карточки:', error);
@@ -172,6 +170,15 @@ const cardLinkInput = document.querySelector(".popup__input_type_url");
     });
  }
 
+ function updateUI(cardsData, userDataId) {
+  // Обновляем карточки
+  cardPlaces.innerHTML = '';
+  cardsData.forEach((card) => {
+    const isLiked = card.likes.some((like) => like._id === userDataId._id);
+    addCard(card.link, card.name, card.likes.length, card.owner._id, userDataId._id, card._id, isLiked);
+  });
+}
+
 const popUpSaveButton = document.querySelector('form[name="new-place"]');
 popUpSaveButton.addEventListener("submit", addPersonalCard);
 const disabledButton = editCard.querySelector(".popup__button");
@@ -180,20 +187,7 @@ const disabledButton = editCard.querySelector(".popup__button");
 
 //Оформление ошибок валидации
 
-const enableValidation = (validationConfig) => {
-  const formList = Array.from(
-    document.querySelectorAll(validationConfig.formSelector)
-  );
-  formList.forEach((formElement) => {
-    formElement.addEventListener("submit", (evt) => {
-      evt.preventDefault();
-    });
-
-    setEventListeners(formElement, validationConfig);
-  });
-};
-
-enableValidation(validationConfig);
+turnValidation(enableValidation);
 
 // Работа с API
 
@@ -216,7 +210,7 @@ Promise.all([cards(), userData()]).then(([cardsData, userDataId]) => {
 
     nameProfile.textContent = userDataId.name;
     aboutProfile.textContent = userDataId.about;
-    avatarProfile.style.backgroundImage = `url(\\${userData.avatar})`;
+    avatarProfile.style.backgroundImage = `url(\\${userDataId.avatar})`;
   });
 })
 .catch((error) => {
@@ -236,6 +230,7 @@ Promise.all([cards(), userData()]).then(([cardsData, userDataId]) => {
   });
 
   const avatarForm = document.querySelector('.popup__type-avatar .popup__form');
+  const avatarUrlInput = avatarForm.querySelector('.popup__input_type_url');
   avatarForm.addEventListener('submit', function (evt) {
     evt.preventDefault();
     // Находим кнопку сохранения и сохраняем ее исходный текст
@@ -243,7 +238,6 @@ Promise.all([cards(), userData()]).then(([cardsData, userDataId]) => {
     const originalButtonText = saveButton.textContent;
     // Заменяем текст на кнопке на "Сохранение..."
     saveButton.textContent = 'Сохранение...';
-    const avatarUrlInput = avatarForm.querySelector('.popup__input_type_url');
     const avatarUrl = avatarUrlInput.value;
     // Вызываем функцию для обновления аватара
     updateAvatar(avatarUrl)
@@ -261,3 +255,5 @@ Promise.all([cards(), userData()]).then(([cardsData, userDataId]) => {
         console.error('Ошибка при обновлении аватара:', error);
       });
   });
+
+  

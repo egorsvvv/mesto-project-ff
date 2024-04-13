@@ -43,7 +43,7 @@ export function deleteHandler(event, cardId) {
   cardToRemove.remove()
   deleteCardApi(cardId)
     .then(() => {
-      deleteCardFromDOM.remove(cardId);
+      console.log("Карточка успешно удалена");
     })
     .catch((error) => {
       console.error('Ошибка при удалении карточки:', error);
@@ -77,8 +77,4 @@ export function likeCard(event, cardId) {
            console.error('Ошибка при установке лайка:', error);
         });
   }
-}
-
-const deleteCardFromDOM = (card) => {
-  card.remove()
 }

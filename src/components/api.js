@@ -64,7 +64,10 @@ export const addNewCard = (name, link) => {
       name: name
     })
   })
-.then(handleResponse);
+  .then(handleResponse)
+  .then((data) => {
+    return { id: data._id }; // Возвращаем объект с ID добавленной карточки
+  });
 }
 
 export const deleteCardApi = (cardId) => {

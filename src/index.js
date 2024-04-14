@@ -1,7 +1,7 @@
 import logo from "./images/logo.svg";
-import black from "./vendor/fonts/inter-Black.woff2";
-import medium from "./vendor/fonts/inter-Medium.woff2";
-import regular from "./vendor/fonts/inter-Regular.woff2";
+import black from "./vendor/fonts/Inter-Black.woff2";
+import medium from "./vendor/fonts/Inter-Medium.woff2";
+import regular from "./vendor/fonts/Inter-Regular.woff2";
 import "./pages/index.css";
 import {
   hideInputError,
